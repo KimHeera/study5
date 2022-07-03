@@ -8,17 +8,17 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 
 public class RightPanel extends JPanel{
 	BufferedImage image;
-	JSlider slider;
+	BufferedImage bright;
+
+	Image resizeImage;
 	
 	int w;
 	int h;
+	double ratio = 0.0;
 	
 	int flag = 0;
 	
@@ -41,64 +41,18 @@ public class RightPanel extends JPanel{
 			}
 	}
 	
-	public void bright() {
-		slider = new JSlider(-50, 50, 0);
-		slider.setBounds(465,10,300,80);
-		slider.setMajorTickSpacing(10); 
-        slider.setMinorTickSpacing(1); 
-        slider.setPaintTicks(true); //눈금을 표시한다.
-        slider.setPaintLabels(true); //값을 레이블로 표시한다.
-        slider.setVisible(false);
-//        Frame.this.add(slider);
-        
-        slider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-
-               int bright = slider.getValue();
-               System.out.println(bright);
-               for (int y = 0; y < image.getHeight(); y++) {
-                  for (int x = 0; x < image.getWidth(); x++) {
-                     int pixel = image.getRGB(x, y);
-                     Color color = new Color(pixel, true);
-                     int red = color.getRed() + bright;
-                     if (red > 255)
-                        red = 255;
-                     else if (red < 0)
-                        red = 0;
-                     int green = color.getGreen() + bright;
-                     if (green > 255)
-                        green = 255;
-                     else if (green < 0)
-                        green = 0;
-                     int blue = color.getBlue() + bright;
-                     if (blue > 255)
-                        blue = 255;
-                     else if (blue < 0)
-                        blue = 0;
-
-                     color = new Color(red, green, blue);
-                     image.setRGB(x, y, color.getRGB());
-                   
-                  }
-               }
-               repaint();
-               }
-           });
-       
-	}
-	
-	public void rotateImage() {
-//		flag = 1;
-	
-//        BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
-// 
-//        // creating Graphics in buffered image
-//        Graphics2D g2 = newImage.createGraphics();
-// 
-//      
-//        
-//        g2.drawImage(image, null, 0, 0);
-		
+	public void invert() {
+		int red, green, blue;
+		for(int y = 0; y < image.getHeight(); y++) {
+ 		   for(int x = 0; x < image.getWidth(); x++) {
+ 		       Color colour = new Color(image.getRGB(x, y));
+ 		       red = 255 - colour.getRed();
+ 		       green = 255 - colour.getGreen();
+ 		       blue = 255 - colour.getBlue();
+ 		       image.setRGB(x, y, new Color(red, green, blue).getRGB());
+// 		       image.setRGB(x, y, new Color(red, green, blue).getRGB());
+ 		   }
+ 		}
 	}
 	
 	
@@ -109,18 +63,10 @@ public class RightPanel extends JPanel{
 		Graphics2D g2=(Graphics2D)g;
 //		System.out.println("안녀엉");
 		if(image!= null) {
-//			if(flag==1) {
-//				BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
-//				Graphics2D g3 = newImage.createGraphics();
-//				g3.rotate(Math.toRadians(90), w/2, h/2);
-//				g3.drawImage(image, null, 0, 0);
-//			}
-			
-			double ratio = 0.0;
-	         int w = 0;
-	         int h = 0;
+		
 	         System.out.println(image.getWidth(null));
 	         System.out.println(image.getHeight(null));
+	         
 	         if(image.getWidth(null)>image.getHeight(null)) {
 	            System.out.println("1");
 	            ratio = ((double)600)/((double)image.getWidth(null));
@@ -132,7 +78,7 @@ public class RightPanel extends JPanel{
 	            w = (int)(image.getWidth(null) * ratio);
 	            h = (int)(image.getHeight(null) * ratio);
 	         }
-	         Image resizeImage = image.getScaledInstance(w, h, Image.SCALE_SMOOTH);      
+	         resizeImage = image.getScaledInstance(w, h, Image.SCALE_SMOOTH);      
 
 	         
 	         if(resizeImage.getWidth(null)>resizeImage.getHeight(null)) {
@@ -143,14 +89,29 @@ public class RightPanel extends JPanel{
 		}
 			
 	}
-	
-	public JSlider getslider() {
-		return slider;
-	}
+
 	
 	public void setImage(BufferedImage image) {
+		
 		this.image = image;
 	}
+	public void settImage(BufferedImage image) {
+		
+		this.bright = image;
+	}
+	
+	public Image getImage() {
+		return resizeImage;
+	}
+	
+	public BufferedImage getbImage() {
+		return bright;
+	}
+	
+	public JPanel getPanel() {
+		return RightPanel.this;
+	}
+	
 	
 	public void setw(int w) {
 		this.w = w;
