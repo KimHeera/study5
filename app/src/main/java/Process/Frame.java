@@ -222,12 +222,13 @@ public class Frame extends JFrame{
     		case "reset" : {
     			System.out.println("이건 리셋");
     			try {
-    				image2 = ImageIO.read(chooser.getSelectedFile());
-    				right.setImage(image2);
-    				right.repaint();
+    				image3 = ImageIO.read(chooser.getSelectedFile());
+    				right.setImage(image3);
+    				
            	    } catch (IOException ex) {
            	        ex.printStackTrace();
            	    }
+    			right.repaint();
     			break;
     		}
     		case "save" : {
